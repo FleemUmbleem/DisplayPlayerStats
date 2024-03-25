@@ -1,9 +1,9 @@
 ﻿using System;
+using System.Reflection;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
-using StardewModdingAPI.Utilities;
 using StardewValley;
 
 namespace ModSandbox
@@ -21,9 +21,10 @@ namespace ModSandbox
 
         public override void Entry(IModHelper helper)
         {
-            helper.Events.Input.ButtonPressed += OnButtonPressed;
-            //helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
-            helper.Events.Display.RenderedWorld += OnRenderedWorld;
+            // Subscribe to the game's update tick
+            helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
+            //helper.Events.Input.ButtonPressed += OnButtonPressed;
+            //helper.Events.Display.RenderedWorld += OnRenderedWorld;
         }
 
         private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
@@ -31,6 +32,35 @@ namespace ModSandbox
             if (Context.IsWorldReady && (e.Button == SButton.MouseLeft || IsLeftMouseButtonDown()))
             {
                 UpdateStaminaText();
+            }
+        }
+
+        private void OnUpdateTicked(object sender, EventArgs e)
+        {
+            // Get a reference to the player
+            Farmer player = Game1.player;
+
+            // Use reflection to access the private field for stamina
+            var field = typeof(Farmer).GetField("stamina", BindingFlags.NonPublic | BindingFlags.Instance);
+
+            if (field != null)
+            {
+                // Get the value of the stamina field
+                float staminaFloat = (float)field.GetValue(player);
+
+                // Parse the float as an integer
+                int stamina = (int)staminaFloat;
+
+
+                Monitor.Log($"Current Stamina: {stamina}");
+                // Now you have the stamina value, you can do whatever you want with it
+                // For example, you could log it to the console
+                Monitor.Log($"Current int Stamina: {stamina}");
+            }
+            else
+            {
+                // Log an error if the field couldn't be found
+                Monitor.Log("Unable to find stamina field.", LogLevel.Error);
             }
         }
 
