@@ -46,7 +46,6 @@ namespace ModSandbox
 				case Woods _:
 				case SlimeHutch _:
 				case VolcanoDungeon _:
-				case Farm _:
 					destStaminaRect = new Rectangle(statusIconsDestX, staminaDestY, destWxH, destWxH);
 					destHealthRect = new Rectangle(statusIconsDestX, healthDestY, destWxH, destWxH);
 					staminaTextPosition = new Vector2(statusTextX, staminaDestY);
