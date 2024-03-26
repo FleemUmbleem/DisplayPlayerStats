@@ -9,43 +9,35 @@ namespace ModSandbox
 	public class UpdateHud
 	{
 		private int currentStamina;
-	 	private int currentHealth;
-		private int staminaIconX = 1;
-		private int staminaIconY = 412;
-		private int healthIconX = 17;
-		private int healthIconY = 412;
-		private int statusIconWxH = 14;
-		private int healthBarOffset = 50;
-		private int viewportMarginRightIcons = 200;
-		private int viewportMarginRightText = 170;
-		private int viewportMarginBottomStamina = 50;
-		private int viewportMarginBottomHealth = 80;
+		private int currentHealth;
 		private Vector2 staminaTextPosition;
 		private Vector2 healthTextPosition;
 		private Rectangle sourceStaminaRect;
 		private Rectangle destStaminaRect;
 		private Rectangle sourceHealthRect;
 		private Rectangle destHealthRect;
-		private float scaleFactor = 2.0f;
+		private Rectangle windowSafeArea;
+		ModConstants modConstants = new ModConstants();
 
 		public void UpdateHudStatusText(Farmer player, Texture2D tileSheet, RenderingHudEventArgs e)
 		{
-			// Reload viewport
-			int statusDestX = Game1.viewport.Width - viewportMarginRightIcons;
-			int staminaDestY = Game1.viewport.Height - viewportMarginBottomStamina;
-			int healthDestY = Game1.viewport.Height - viewportMarginBottomHealth;
-			int statusTextX = Game1.viewport.Width - viewportMarginRightText;
+			// Get the safe area
+			windowSafeArea = Utility.getSafeArea();
+			int statusIconsDestX = windowSafeArea.Right - modConstants.viewportMarginRightIcons;
+			int staminaDestY = windowSafeArea.Bottom - modConstants.viewportMarginBottomStamina;
+			int healthDestY = windowSafeArea.Bottom - modConstants.viewportMarginBottomHealth;
+			int statusTextX = windowSafeArea.Right - modConstants.viewportMarginRightText;
 
 			// Get stamina and health values
 			currentHealth = player.health;
 			currentStamina = (int)player.stamina;
 
 			// Create the source rectangles for cropping
-			sourceStaminaRect = new Rectangle(staminaIconX, staminaIconY, statusIconWxH, statusIconWxH);
-			sourceHealthRect = new Rectangle(healthIconX, healthIconY, statusIconWxH, statusIconWxH);
+			sourceStaminaRect = new Rectangle(modConstants.staminaIconX, modConstants.staminaIconY, modConstants.statusIconWxH, modConstants.statusIconWxH);
+			sourceHealthRect = new Rectangle(modConstants.healthIconX, modConstants.healthIconY, modConstants.statusIconWxH, modConstants.statusIconWxH);
 
 			// Scale up the icons
-			int destWxH = (int)(statusIconWxH * scaleFactor);
+			int destWxH = (int)(modConstants.statusIconWxH * modConstants.scaleFactor);
 
 			// Calculate position for image based on the text position and current game location
 			switch (Game1.currentLocation)
@@ -55,16 +47,16 @@ namespace ModSandbox
 				case SlimeHutch _:
 				case VolcanoDungeon _:
 				case Farm _:
-					destStaminaRect = new Rectangle(statusDestX, staminaDestY, destWxH, destWxH);
-					destHealthRect = new Rectangle(statusDestX, healthDestY, destWxH, destWxH);
+					destStaminaRect = new Rectangle(statusIconsDestX, staminaDestY, destWxH, destWxH);
+					destHealthRect = new Rectangle(statusIconsDestX, healthDestY, destWxH, destWxH);
 					staminaTextPosition = new Vector2(statusTextX, staminaDestY);
 					healthTextPosition = new Vector2(statusTextX, healthDestY);
 				break;
 				default:
-					destStaminaRect = new Rectangle(statusDestX + healthBarOffset, staminaDestY, destWxH, destWxH);
-					destHealthRect = new Rectangle(statusDestX + healthBarOffset, healthDestY, destWxH, destWxH);
-					staminaTextPosition = new Vector2(statusTextX + healthBarOffset, staminaDestY);
-					healthTextPosition = new Vector2(statusTextX + healthBarOffset, healthDestY);
+					destStaminaRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, destWxH, destWxH);
+					destHealthRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, healthDestY, destWxH, destWxH);
+					staminaTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, staminaDestY);
+					healthTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, healthDestY);
 				break;
 			}
 
