@@ -6,5 +6,5 @@
 	"UniqueID": "Fleem.DisplayPlayerStats",
 	"EntryDll": "DisplayPlayerStats.dll",
 	"MinimumApiVersion": "3.0.0",
-	"UpdateKeys": []
+	"UpdateKeys": [ "GitHub:FleemUmbleem/DisplayPlayerStats" ]
 }
