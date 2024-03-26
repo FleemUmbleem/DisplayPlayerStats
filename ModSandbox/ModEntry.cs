@@ -5,6 +5,9 @@ using Microsoft.Xna.Framework.Graphics;
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Characters;
+using xTile.Tiles;
+using static System.Net.Mime.MediaTypeNames;
 
 namespace ModSandbox
 {
@@ -16,77 +19,75 @@ namespace ModSandbox
         *********/
         /// <summary>The mod entry point, called after the mod is first loaded.</summary>
         /// <param name="helper">Provides simplified APIs for writing mods.</param>
-        private bool showText = true;
-        private string textToDisplay = "scoopdiddywhoop";
+		private int currentStamina;
+		private int currentHealth;
+		private int tickCount = 0;
+		private int staminaIconX = 1;
+		private int staminaIconY = 412;
+		private int statusIconWxH = 14;
+		private int healthIconX = 17;
+		private int healthIconY = 412;
+		private Texture2D tileSheet;
+		private Texture2D staminaIcon;
+		private Rectangle sourceStaminaRect;
+		private Rectangle destStaminaRect;
+		private Rectangle sourceHealthRect;
+		private Rectangle destHealthRect;
+		private string cursorsTileSheetPath = "\\Content\\LooseSprites\\cursors.xnb";
+		private float scaleFactor = 2.0f;
 
-        public override void Entry(IModHelper helper)
-        {
-            // Subscribe to the game's update tick
-            helper.Events.GameLoop.UpdateTicked += OnUpdateTicked;
-            //helper.Events.Input.ButtonPressed += OnButtonPressed;
-            //helper.Events.Display.RenderedWorld += OnRenderedWorld;
-        }
+		public override void Entry(IModHelper helper)
+		{
+			tileSheet = helper.ModContent.Load<Texture2D>(Path.Combine(Constants.GamePath + cursorsTileSheetPath));
 
-        private void OnButtonPressed(object sender, ButtonPressedEventArgs e)
-        {
-            if (Context.IsWorldReady && (e.Button == SButton.MouseLeft || IsLeftMouseButtonDown()))
-            {
-                UpdateStaminaText();
-            }
-        }
+			// Subscribe to the game's ticks
+			helper.Events.Display.RenderingHud += OnRenderingHud;
+		}
 
-        private void OnUpdateTicked(object sender, EventArgs e)
-        {
-            // Get a reference to the player
-            Farmer player = Game1.player;
+        private void OnRenderingHud(object sender, RenderingHudEventArgs e)
+		{
+			// Get a reference to the player
+			Farmer player = Game1.player;
 
-            // Use reflection to access the private field for stamina
-            var field = typeof(Farmer).GetField("stamina", BindingFlags.NonPublic | BindingFlags.Instance);
+			// Reload viewport
+			int statusDestX = Game1.viewport.Width - 210;
+			int staminaDestY = Game1.viewport.Height - 50;
+			int healthDestY = Game1.viewport.Height - 80;
+			int statusTextX = Game1.viewport.Width - 170;
 
-            if (field != null)
-            {
-                // Get the value of the stamina field
-                float staminaFloat = (float)field.GetValue(player);
+			// Get stamina and health values
+			currentHealth = player.health;
+			currentStamina = (int)player.stamina;
 
-                // Parse the float as an integer
-                int stamina = (int)staminaFloat;
+			// Create the source rectangles for cropping
+			sourceStaminaRect = new Rectangle(staminaIconX, staminaIconY, statusIconWxH, statusIconWxH);
+			sourceHealthRect = new Rectangle(healthIconX, healthIconY, statusIconWxH, statusIconWxH);
 
+			// Calculate the destination rectangles for rendering
+			int destWxH = (int)(statusIconWxH * scaleFactor);
+			destStaminaRect = new Rectangle(statusDestX, staminaDestY, destWxH, destWxH);
+			destHealthRect = new Rectangle(statusDestX, healthDestY, destWxH, destWxH);
 
-                Monitor.Log($"Current Stamina: {stamina}");
-                // Now you have the stamina value, you can do whatever you want with it
-                // For example, you could log it to the console
-                Monitor.Log($"Current int Stamina: {stamina}");
-            }
-            else
-            {
-                // Log an error if the field couldn't be found
-                Monitor.Log("Unable to find stamina field.", LogLevel.Error);
-            }
-        }
+			// Calculate position for image based on the text position
+			Vector2 staminaTextPosition = new Vector2(statusTextX, staminaDestY);
+			Vector2 helathTextPosition = new Vector2(statusTextX, healthDestY);
 
-        private bool IsLeftMouseButtonDown()
-        {
-            return Game1.input.GetMouseState().LeftButton == Microsoft.Xna.Framework.Input.ButtonState.Pressed;
-        }
+			// Draw value and icon to the screen
+			SpriteBatch spriteBatch = e.SpriteBatch;
+            spriteBatch.DrawString(Game1.smallFont,$"{currentStamina}", staminaTextPosition, Color.White);
+			spriteBatch.Draw(tileSheet, destStaminaRect, sourceStaminaRect, Color.White);
+			spriteBatch.DrawString(Game1.smallFont, $"{currentHealth}", helathTextPosition, Color.White);
+			spriteBatch.Draw(tileSheet, destHealthRect, sourceHealthRect, Color.White);
 
-        private void UpdateStaminaText()
-        {
-            this.Monitor.Log($"stamina updated", LogLevel.Debug);
-            textToDisplay = Game1.player.stamina.ToString();
-        }
-
-        private void OnRenderedWorld(object sender, RenderedWorldEventArgs e)
-        {
-            if (Context.IsWorldReady && showText)
-            {
-                SpriteBatch spriteBatch = e.SpriteBatch;
-
-                //this.Monitor.Log($"stamina drawn to screen", LogLevel.Debug);
-
-                // Draw your text onto the screen
-                Vector2 position = new Vector2(100, 100); // Example position
-                spriteBatch.DrawString(Game1.smallFont, textToDisplay, position, Color.White);
-            }
-        }
+			// Only display debug info every few seconds
+			tickCount++;
+			if (tickCount == 180)
+			{
+				// DEBUG
+				Monitor.Log($"CurrentStamina = {currentStamina}", LogLevel.Debug);
+				//Monitor.Log($"x pos: {textPosition.X} | y pos: {textPosition.Y}", LogLevel.Debug);
+				tickCount = 0;
+			}
+		}        
     }
 }
