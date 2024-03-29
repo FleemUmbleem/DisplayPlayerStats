@@ -2,6 +2,7 @@
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using System;
 
 namespace ModSandbox
 {
@@ -13,6 +14,7 @@ namespace ModSandbox
 		private UpdateHud updateHud;
 		public int tickCount = 0;
 		ModConstants modConstants = new ModConstants();
+		bool complete = false;
 
 		/// <summary>The mod entry point, called after the mod is first loaded.</summary>
 		/// <param name="helper">Provides simplified APIs for writing mods.</param>
@@ -31,28 +33,42 @@ namespace ModSandbox
 			player = Game1.player;
 			updateHud = new UpdateHud();
 
-			// Update the HUD
-			if (tileSheet != null)
+			
+
+            // Update the HUD
+            if (tileSheet != null)
 			{
 				updateHud.UpdateHudStatusText(player, tileSheet, e);
 			}
 
 			// Log every 180 ticks (roughly 3 seconds)
-			//TickLogger();
+			TickLogger();
 		}
 
 		public void TickLogger()
 		{
 			// Only display debug info every few seconds
 			tickCount++;
-			if (tickCount == 180)
+			if (tickCount == 240)
 			{
-				// Place debug logs here - leaving some commented as they are good reference
-				//Monitor.Log($"OnRenderingHudCalled - zoomLevel: {Game1.options.zoomLevel} - WxH: {Game1.viewport.Width}x{Game1.viewport.Height}", LogLevel.Debug);
-				//Monitor.Log($"SafeArea WxH: {testSafeArea.Width}x{testSafeArea.Height}", LogLevel.Debug);
-				//Monitor.Log($"SafeArea TxB: {testSafeArea.Top}x{testSafeArea.Bottom}", LogLevel.Debug);
-				//Monitor.Log($"SafeArea LxR: {testSafeArea.Left}x{testSafeArea.Right}", LogLevel.Debug);
-				tickCount = 0;
+                int bundleId = 6; //gotta figure out watagwan here
+                if (Game1.netWorldState.Value.Bundles.ContainsKey(bundleId))
+                {
+                    bool[] bundleCompletionStatus = Game1.netWorldState.Value.Bundles[bundleId];
+
+                    // Iterate through the array and print the completion status of each item
+                    for (int i = 0; i < bundleCompletionStatus.Length; i++)
+                    {
+                        bool itemCompletionStatus = bundleCompletionStatus[i];
+                        Console.WriteLine($"Item {i + 1} Completion Status: {itemCompletionStatus}");
+                    }
+                }
+                // Place debug logs here - leaving some commented as they are good reference
+                //Monitor.Log($"OnRenderingHudCalled - zoomLevel: {Game1.options.zoomLevel} - WxH: {Game1.viewport.Width}x{Game1.viewport.Height}", LogLevel.Debug);
+                //Monitor.Log($"SafeArea WxH: {testSafeArea.Width}x{testSafeArea.Height}", LogLevel.Debug);
+                //Monitor.Log($"SafeArea TxB: {testSafeArea.Top}x{testSafeArea.Bottom}", LogLevel.Debug);
+                //Monitor.Log($"SafeArea LxR: {testSafeArea.Left}x{testSafeArea.Right}", LogLevel.Debug);
+                tickCount = 0;
 			}
 		}
 	}
