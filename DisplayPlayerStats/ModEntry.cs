@@ -2,6 +2,7 @@
 using StardewModdingAPI;
 using StardewModdingAPI.Events;
 using StardewValley;
+using StardewValley.Locations;
 using System;
 
 namespace ModSandbox
@@ -51,24 +52,34 @@ namespace ModSandbox
 			tickCount++;
 			if (tickCount == 240)
 			{
-                int bundleId = 6; //gotta figure out watagwan here
-                if (Game1.netWorldState.Value.Bundles.ContainsKey(bundleId))
-                {
-                    bool[] bundleCompletionStatus = Game1.netWorldState.Value.Bundles[bundleId];
 
-                    // Iterate through the array and print the completion status of each item
-                    for (int i = 0; i < bundleCompletionStatus.Length; i++)
-                    {
-                        bool itemCompletionStatus = bundleCompletionStatus[i];
-                        Console.WriteLine($"Item {i + 1} Completion Status: {itemCompletionStatus}");
-                    }
-                }
-                // Place debug logs here - leaving some commented as they are good reference
-                //Monitor.Log($"OnRenderingHudCalled - zoomLevel: {Game1.options.zoomLevel} - WxH: {Game1.viewport.Width}x{Game1.viewport.Height}", LogLevel.Debug);
-                //Monitor.Log($"SafeArea WxH: {testSafeArea.Width}x{testSafeArea.Height}", LogLevel.Debug);
-                //Monitor.Log($"SafeArea TxB: {testSafeArea.Top}x{testSafeArea.Bottom}", LogLevel.Debug);
-                //Monitor.Log($"SafeArea LxR: {testSafeArea.Left}x{testSafeArea.Right}", LogLevel.Debug);
-                tickCount = 0;
+				switch (Game1.currentLocation)
+				{
+					case CommunityCenter _:
+					Monitor.Log($"============== START", LogLevel.Debug);
+
+					for (int i = 0; i < 12; i++)
+					{
+						bool[] bundleCompletionStatus = Game1.netWorldState.Value.Bundles[i];
+
+						// Iterate through the array and print the completion status of each item
+						for (int j = 0; j < bundleCompletionStatus.Length; j++)
+						{
+							bool itemCompletionStatus = bundleCompletionStatus[j];
+							Monitor.Log($"Item {j + 1} Completion Status: {itemCompletionStatus}", LogLevel.Debug);
+						}
+					}
+					Monitor.Log($"============== END", LogLevel.Debug);
+					break;
+					default:
+					break;
+				}
+				// Place debug logs here - leaving some commented as they are good reference
+				//Monitor.Log($"OnRenderingHudCalled - zoomLevel: {Game1.options.zoomLevel} - WxH: {Game1.viewport.Width}x{Game1.viewport.Height}", LogLevel.Debug);
+				//Monitor.Log($"SafeArea WxH: {testSafeArea.Width}x{testSafeArea.Height}", LogLevel.Debug);
+				//Monitor.Log($"SafeArea TxB: {testSafeArea.Top}x{testSafeArea.Bottom}", LogLevel.Debug);
+				//Monitor.Log($"SafeArea LxR: {testSafeArea.Left}x{testSafeArea.Right}", LogLevel.Debug);
+				tickCount = 0;
 			}
 		}
 	}
