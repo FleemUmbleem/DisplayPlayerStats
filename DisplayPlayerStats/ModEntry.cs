@@ -38,7 +38,7 @@ namespace ModSandbox
 			}
 
 			// Log every 180 ticks (roughly 3 seconds)
-			//TickLogger();
+			TickLogger();
 		}
 
 		public void TickLogger()
@@ -49,7 +49,7 @@ namespace ModSandbox
 			{
 				// Place debug logs here - leaving some commented as they are good reference
 				//Monitor.Log($"OnRenderingHudCalled - zoomLevel: {Game1.options.zoomLevel} - WxH: {Game1.viewport.Width}x{Game1.viewport.Height}", LogLevel.Debug);
-				//Monitor.Log($"SafeArea WxH: {testSafeArea.Width}x{testSafeArea.Height}", LogLevel.Debug);
+				//Monitor.Log($"health: {player.health} - maxHealth: {player.maxHealth}", LogLevel.Debug);
 				//Monitor.Log($"SafeArea TxB: {testSafeArea.Top}x{testSafeArea.Bottom}", LogLevel.Debug);
 				//Monitor.Log($"SafeArea LxR: {testSafeArea.Left}x{testSafeArea.Right}", LogLevel.Debug);
 				tickCount = 0;

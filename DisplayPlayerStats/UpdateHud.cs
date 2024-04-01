@@ -39,25 +39,35 @@ namespace ModSandbox
 			// Scale up the icons
 			int destWxH = (int)(modConstants.statusIconWxH * modConstants.scaleFactor);
 
-			// Calculate position for image based on the text position and current game location
-			switch (Game1.currentLocation)
+			if (player.health != player.maxHealth)
 			{
-				case MineShaft _:
-				case Woods _:
-				case SlimeHutch _:
-				case VolcanoDungeon _:
-					destStaminaRect = new Rectangle(statusIconsDestX, staminaDestY, destWxH, destWxH);
-					destHealthRect = new Rectangle(statusIconsDestX, healthDestY, destWxH, destWxH);
-					staminaTextPosition = new Vector2(statusTextX, staminaDestY);
-					healthTextPosition = new Vector2(statusTextX, healthDestY);
-				break;
-				default:
-					destStaminaRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, destWxH, destWxH);
-					destHealthRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, healthDestY, destWxH, destWxH);
-					staminaTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, staminaDestY);
-					healthTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, healthDestY);
-				break;
-			}
+                destStaminaRect = new Rectangle(statusIconsDestX, staminaDestY, destWxH, destWxH);
+                destHealthRect = new Rectangle(statusIconsDestX, healthDestY, destWxH, destWxH);
+                staminaTextPosition = new Vector2(statusTextX, staminaDestY);
+                healthTextPosition = new Vector2(statusTextX, healthDestY);
+            }
+			else
+			{
+				// Calculate position for image based on the text position and current game location
+				switch (Game1.currentLocation)
+				{
+					case MineShaft _:
+					case Woods _:
+					case SlimeHutch _:
+					case VolcanoDungeon _:
+						destStaminaRect = new Rectangle(statusIconsDestX, staminaDestY, destWxH, destWxH);
+						destHealthRect = new Rectangle(statusIconsDestX, healthDestY, destWxH, destWxH);
+						staminaTextPosition = new Vector2(statusTextX, staminaDestY);
+						healthTextPosition = new Vector2(statusTextX, healthDestY);
+						break;
+					default:
+                        destStaminaRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, destWxH, destWxH);
+                        destHealthRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, healthDestY, destWxH, destWxH);
+                        staminaTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, staminaDestY);
+                        healthTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, healthDestY);
+                        break;
+				}
+            }
 
 			// Draw value and icon to the screen
 			SpriteBatch spriteBatch = e.SpriteBatch;
