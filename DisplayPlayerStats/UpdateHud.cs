@@ -39,25 +39,27 @@ namespace ModSandbox
 			// Scale up the icons
 			int destWxH = (int)(modConstants.statusIconWxH * modConstants.scaleFactor);
 
-			// Calculate position for image based on the text position and current game location
-			switch (Game1.currentLocation)
+			// Draw icons in altered position if the player has less than MaxHP
+			if (player.health != player.maxHealth)
 			{
-				case MineShaft _:
-				case Woods _:
-				case SlimeHutch _:
-				case VolcanoDungeon _:
-					destStaminaRect = new Rectangle(statusIconsDestX, staminaDestY, destWxH, destWxH);
-					destHealthRect = new Rectangle(statusIconsDestX, healthDestY, destWxH, destWxH);
-					staminaTextPosition = new Vector2(statusTextX, staminaDestY);
-					healthTextPosition = new Vector2(statusTextX, healthDestY);
-				break;
-				default:
-					destStaminaRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, destWxH, destWxH);
-					destHealthRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, healthDestY, destWxH, destWxH);
-					staminaTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, staminaDestY);
-					healthTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, healthDestY);
-				break;
-			}
+				SetIconDrawPos(statusIconsDestX, staminaDestY, healthDestY, destWxH, statusTextX, staminaDestY, healthDestY);
+            }
+			else
+			{
+				// Draw icons in a different place if on full HP and in one of the locations where the health bar spawns
+				switch (Game1.currentLocation)
+				{
+					case MineShaft _:
+					case Woods _:
+					case SlimeHutch _:
+					case VolcanoDungeon _:
+					SetIconDrawPos(statusIconsDestX, staminaDestY, healthDestY, destWxH, statusTextX, staminaDestY, healthDestY);
+						break;
+					default:
+					SetIconDrawPos(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, healthDestY, destWxH, statusTextX + modConstants.healthBarOffset, staminaDestY, healthDestY);
+                        break;
+				}
+            }
 
 			// Draw value and icon to the screen
 			SpriteBatch spriteBatch = e.SpriteBatch;
@@ -65,6 +67,14 @@ namespace ModSandbox
 			spriteBatch.Draw(tileSheet, destStaminaRect, sourceStaminaRect, Color.White);
 			spriteBatch.DrawString(Game1.smallFont, $"{currentHealth}", healthTextPosition, Color.White);
 			spriteBatch.Draw(tileSheet, destHealthRect, sourceHealthRect, Color.White);
+		}
+
+		private void SetIconDrawPos(int xPosIcon, int yPosStamina, int YPosHealth, int destWxH, int statusTextX, int staminaDestY, int healthDestY)
+		{
+			destStaminaRect = new Rectangle(xPosIcon, yPosStamina, destWxH, destWxH);
+			destHealthRect = new Rectangle(xPosIcon, YPosHealth, destWxH, destWxH);
+			staminaTextPosition = new Vector2(statusTextX, staminaDestY);
+			healthTextPosition = new Vector2(statusTextX, healthDestY);
 		}
 	}
 }
