@@ -38,7 +38,7 @@ namespace ModSandbox
 			}
 
 			// Log every 180 ticks (roughly 3 seconds)
-			TickLogger();
+			//TickLogger();
 		}
 
 		public void TickLogger()
