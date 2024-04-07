@@ -50,14 +50,25 @@ namespace ModSandbox
 				switch (Game1.currentLocation)
 				{
 					case MineShaft _:
+						SetIconDrawPos(statusIconsDestX, staminaDestY, healthDestY, destWxH, statusTextX, staminaDestY, healthDestY);
+					break;
 					case Woods _:
 					case SlimeHutch _:
 					case VolcanoDungeon _:
-					SetIconDrawPos(statusIconsDestX, staminaDestY, healthDestY, destWxH, statusTextX, staminaDestY, healthDestY);
+						if (!Utility.isFestivalDay())
+						{
+							SetIconDrawPos(statusIconsDestX, staminaDestY, healthDestY, destWxH, statusTextX, staminaDestY, healthDestY);
+						}
 						break;
+					case Farm _:
+						SetIconDrawPos(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, healthDestY, destWxH, statusTextX + modConstants.healthBarOffset, staminaDestY, healthDestY);
+					break;
 					default:
-					SetIconDrawPos(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, healthDestY, destWxH, statusTextX + modConstants.healthBarOffset, staminaDestY, healthDestY);
-                        break;
+						if (!Utility.isFestivalDay())
+						{
+							SetIconDrawPos(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, healthDestY, destWxH, statusTextX + modConstants.healthBarOffset, staminaDestY, healthDestY);
+						}
+                    break;
 				}
             }
 

@@ -1,7 +1,7 @@
 {
 	"Name": "DisplayPlayerStats",
 	"Author": "Fleem",
-	"Version": "1.0.0",
+	"Version": "1.0.1",
 	"Description": "Permanently displays health and energy values on screen - for use with SMAPI",
 	"UniqueID": "Fleem.DisplayPlayerStats",
 	"EntryDll": "DisplayPlayerStats.dll",
