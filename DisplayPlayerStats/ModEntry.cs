@@ -11,6 +11,7 @@ namespace ModSandbox
 	internal sealed class ModEntry : Mod
 	{
 		private Texture2D? tileSheet;
+		private Texture2D? background;
 		private Farmer player;
 		private UpdateHud updateHud;
 		public int tickCount = 0;
@@ -23,6 +24,7 @@ namespace ModSandbox
 		{
 			// Load in tilesheet
 			tileSheet = helper.ModContent.Load<Texture2D>(Path.Combine(Constants.GamePath + modConstants.cursorsTileSheetPath));
+			background = helper.ModContent.Load<Texture2D>(Path.Combine(Constants.GamePath + modConstants.BackgroundImagePath));
 
 			// Subscribe to the HUD rendering ticks
 			helper.Events.Display.RenderingHud += OnRenderingHud;
@@ -39,7 +41,7 @@ namespace ModSandbox
             // Update the HUD
             if (tileSheet != null)
 			{
-				updateHud.UpdateHudStatusText(player, tileSheet, e);
+				updateHud.UpdateHudStatusText(player, tileSheet, background, e);
 			}
 
 			// Log every 180 ticks (roughly 3 seconds)

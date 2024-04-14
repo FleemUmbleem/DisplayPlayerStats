@@ -12,6 +12,7 @@ namespace ModSandbox
 		private int currentHealth;
 		private Vector2 staminaTextPosition;
 		private Vector2 healthTextPosition;
+		private Rectangle backgroundRect;
 		private Rectangle sourceStaminaRect;
 		private Rectangle destStaminaRect;
 		private Rectangle sourceHealthRect;
@@ -19,7 +20,7 @@ namespace ModSandbox
 		private Rectangle windowSafeArea;
 		ModConstants modConstants = new ModConstants();
 
-		public void UpdateHudStatusText(Farmer player, Texture2D tileSheet, RenderingHudEventArgs e)
+		public void UpdateHudStatusText(Farmer player, Texture2D tileSheet, Texture2D background, RenderingHudEventArgs e)
 		{
 			// Get the safe area
 			windowSafeArea = Utility.getSafeArea();
@@ -52,6 +53,7 @@ namespace ModSandbox
 					healthTextPosition = new Vector2(statusTextX, healthDestY);
 				break;
 				default:
+					backgroundRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, healthDestY, destWxH, destWxH);
 					destStaminaRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, staminaDestY, destWxH, destWxH);
 					destHealthRect = new Rectangle(statusIconsDestX + modConstants.healthBarOffset, healthDestY, destWxH, destWxH);
 					staminaTextPosition = new Vector2(statusTextX + modConstants.healthBarOffset, staminaDestY);
@@ -61,6 +63,7 @@ namespace ModSandbox
 
 			// Draw value and icon to the screen
 			SpriteBatch spriteBatch = e.SpriteBatch;
+			spriteBatch.Draw(background, backgroundRect, Color.White); // requires thought on figuring out coordinates
 			spriteBatch.DrawString(Game1.smallFont, $"{currentStamina}", staminaTextPosition, Color.White);
 			spriteBatch.Draw(tileSheet, destStaminaRect, sourceStaminaRect, Color.White);
 			spriteBatch.DrawString(Game1.smallFont, $"{currentHealth}", healthTextPosition, Color.White);

@@ -4,7 +4,8 @@
 	{
 		// ModEntry constants
 		public string cursorsTileSheetPath = "\\Content\\LooseSprites\\cursors.xnb";
-
+		public string BackgroundImagePath = "\\Content\\LooseSprites\\boardGameBorder.xnb";
+		
 		// HUD constants
 		public int staminaIconX = 1;
 		public int staminaIconY = 412;
